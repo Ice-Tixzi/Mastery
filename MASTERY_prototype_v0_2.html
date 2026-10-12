@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MASTERY — Prototype v0.2</title>
+<style>
+
+:root{--bg:#070c18;--panel:#101a2e;--panel2:#172540;--line:#2b4166;--text:#eef4ff;--muted:#a4b3ce;--blue:#73b7ff;--cyan:#72f0e1;--purple:#ad8cff;--good:#80e6ae;--warn:#ffd27d}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 18% 0%,#172b50 0,transparent 42%),radial-gradient(ellipse at 90% 30%,#171333 0,transparent 35%),var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:920px;margin:auto;padding:30px 22px 72px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid #233653}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:52px;height:52px;border-radius:17px;background:linear-gradient(135deg,#75b9ff,#9675ff);display:grid;place-items:center;color:#07101f;font-size:27px;font-weight:900;box-shadow:0 0 32px #5c9cff38}
+.brand h1{margin:0;font-size:26px;letter-spacing:4px}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12px;letter-spacing:1px}
+.tag{border:1px solid var(--line);padding:9px 13px;border-radius:999px;color:var(--cyan);font-size:12px;white-space:nowrap}
+h2{font-size:21px;line-height:1.35;margin:0 0 16px}
+h3{font-size:17px;margin:0 0 9px}
+.sub{color:var(--muted);font-size:14px;margin-top:-5px;margin-bottom:20px;line-height:1.7}
+.hero{background:linear-gradient(120deg,#172d50,#17172f 72%);border:1px solid #3a527a;border-radius:24px;padding:32px;margin-bottom:26px;position:relative;overflow:hidden;min-height:190px;display:flex;flex-direction:column;justify-content:center}
+.hero:after{content:"✦";position:absolute;right:30px;top:0;font-size:130px;color:#91aaff12;pointer-events:none}
+.eyebrow{color:var(--cyan);font-size:12px;letter-spacing:2.4px;font-weight:800}
+.hero h2{font-size:clamp(27px,4vw,36px);margin:8px 0 12px;max-width:720px}
+.hero p{max-width:680px;color:#c5d4ed;margin:0;font-size:16px}
+.grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
+.grid main,.grid aside{display:flex;flex-direction:column;gap:22px;min-width:0}
+.card{background:linear-gradient(180deg,#121e33,#0d1628);border:1px solid var(--line);border-radius:21px;padding:26px;margin:0;min-width:0;box-shadow:0 12px 28px #00000016}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.stat{background:linear-gradient(145deg,#192946,#142139);border:1px solid #304568;border-radius:16px;padding:18px}
+.stat small{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}
+.stat strong{font-size:29px;line-height:1.25}
+.bar{height:12px;border-radius:99px;background:#263550;overflow:hidden;margin:14px 0 9px}
+.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:99px;transition:width .2s}
+.muted{color:var(--muted)}
+.rank{font-weight:850;color:var(--cyan);font-size:25px;letter-spacing:.4px}
+.quest{border:1px solid #2b4163;background:linear-gradient(110deg,#14223a,#111d31);border-radius:17px;padding:19px;margin:15px 0;display:flex;gap:16px;align-items:flex-start}
+.quest.done{opacity:.68;border-color:#39795f}
+.quest .qbody{flex:1;min-width:0}
+.quest p{margin:7px 0;color:var(--muted);font-size:14px;line-height:1.65}
+.xp{font-size:13px;color:var(--cyan);font-weight:800;white-space:nowrap}
+.pill{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;padding:5px 9px;border-radius:999px;background:#263756;color:#cfe0ff;margin-bottom:5px}
+.pill.easy{color:#a9eac7}.pill.medium{color:#91c7ff}.pill.hard{color:#d3b8ff}
+.btn{border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:750;cursor:pointer;background:linear-gradient(135deg,#8cc7ff,#a994ff);color:#0b1222;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.btn.secondary{background:#1b2b45;color:#dbe8ff;border:1px solid #344b70}
+.btn.small{padding:9px 12px;font-size:13px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+label{display:block;font-size:13px;color:#c3d1e8;margin:17px 0 7px}
+input,select,textarea{width:100%;background:#0a1221;border:1px solid #334867;border-radius:12px;padding:13px 14px;color:var(--text);font:inherit;min-height:48px}
+textarea{min-height:110px}
+input[type=checkbox]{width:auto;min-height:auto;accent-color:#8fc7ff;margin-right:7px}
+.checks{display:flex;flex-wrap:wrap;gap:9px}
+.checks label{background:#15233a;border:1px solid #2a3c5b;border-radius:12px;padding:10px 13px;margin:4px 0}
+.notice{background:#102a2b;border:1px solid #23605a;color:#c8fff0;padding:15px 16px;border-radius:14px;font-size:13px;line-height:1.65;margin-top:17px}
+.warn{background:#302719;border-color:#72572c;color:#ffe7b6}
+.hidden{display:none!important}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tiny{font-size:12px;color:var(--muted);line-height:1.6}
+.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.day{border:1px solid #2a3c5c;border-radius:12px;padding:13px 5px;text-align:center;background:#111d30;font-size:12px}
+.day b{display:block;font-size:15px;margin-bottom:3px}
+.day.active{border-color:#4d8fc6;background:#18304a;color:#c9eaff}
+.day.done{border-color:#347457;background:#123025}
+.empty{border:1px dashed #354a6a;border-radius:14px;padding:19px;color:var(--muted);font-size:14px}
+.footer{color:#71819d;font-size:12px;text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #233653}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#e7f3ff;color:#081222;border-radius:13px;padding:13px 18px;font-weight:800;box-shadow:0 8px 30px #0008;display:none;z-index:9;max-width:90%;text-align:center}
+@media(max-width:650px){
+  .wrap{padding:18px 12px 48px}
+  .top{align-items:flex-start;margin-bottom:22px}
+  .brand h1{font-size:22px;letter-spacing:3px}
+  .logo{width:46px;height:46px}
+  .tag{font-size:10px;padding:7px 9px;white-space:normal;text-align:center}
+  .hero{padding:23px 20px;min-height:0;border-radius:20px}
+  .hero h2{font-size:26px}
+  .hero p{font-size:14px}
+  .card{padding:20px 16px;border-radius:18px}
+  h2{font-size:19px}
+  .stats{grid-template-columns:1fr;gap:9px}
+  .stat{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .stat small{margin:0}
+  .stat strong{font-size:23px}
+  .quest{padding:15px 13px;gap:11px;flex-wrap:wrap}
+  .quest .qbody{flex-basis:calc(100% - 10px)}
+  .xp{margin-left:auto}
+  .days{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .actions .btn{max-width:100%}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">M</div><div><h1>MASTERY</h1><p>SPORT RPG · PROTOTYPE v0.2</p></div></div>
+    <div class="tag">⚡ VERSION TEST · V0.2</div>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">TON PARCOURS COMMENCE ICI</div>
+    <h2>Moins de blabla. Plus de progression.</h2>
+    <p>Transforme tes activités sportives en quêtes, gagne de l'XP et suis tes progrès. Le système s'adapte à ton planning — pas l'inverse.</p>
+  </section>
+
+  <div class="grid">
+    <main>
+      <section class="card">
+        <div class="sectionhead"><h2>🧬 Ton statut</h2><span class="pill">BÊTA</span></div>
+        <div class="rank" id="rankName">RANG E · NOVICE</div>
+        <div class="muted" id="levelText">Niveau 1 · 0 XP</div>
+        <div class="bar"><span id="xpBar"></span></div>
+        <div class="sectionhead"><span class="tiny" id="xpProgress">0 / 100 XP vers le prochain niveau</span><span class="tiny" id="totalXp">Total : 0 XP</span></div>
+        <div class="stats" style="margin-top:14px">
+          <div class="stat"><small>Quêtes finies</small><strong id="doneCount">0</strong></div>
+          <div class="stat"><small>Activités loggées</small><strong id="activityCount">0</strong></div>
+          <div class="stat"><small>Série actuelle</small><strong id="streak">0 j</strong></div>
+        </div>
+        <div class="notice">🛡️ Pas de pénalité pour le repos. Une séance annulée ou un jour de récupération ne te fait perdre ni XP ni rang.</div>
+      </section>
+
+      <section class="card">
+        <div class="sectionhead"><h2>📜 Quêtes de la semaine</h2><button class="btn secondary small" id="refreshBtn">Adapter</button></div>
+        <p class="sub">Les quêtes sont des propositions. Tu peux les ignorer si tu es fatigué ou si ton planning change.</p>
+        <div id="quests"></div>
+        <div class="actions"><button class="btn secondary" id="resetWeekBtn">Nouvelle semaine de test</button></div>
+      </section>
+
+      <section class="card">
+        <h2>⚽ Enregistrer une activité</h2>
+        <p class="sub">Une séance déjà prévue compte : pas besoin de refaire du sport pour « mériter » l'XP.</p>
+        <label for="activityType">Activité</label>
+        <select id="activityType">
+          <option value="team">Entraînement collectif / club</option>
+          <option value="match">Match ou compétition</option>
+          <option value="strength">Renforcement / musculation</option>
+          <option value="run">Course / cardio</option>
+          <option value="other">Autre sport</option>
+        </select>
+        <label for="activityEffort">Comment s'est passée la séance ?</label>
+        <select id="activityEffort">
+          <option value="normal">Normale — effort habituel</option>
+          <option value="light">Légère — technique ou séance tranquille</option>
+          <option value="hard">Exigeante — séance intense prévue</option>
+        </select>
+        <div class="actions"><button class="btn" id="logActivity">Valider l'activité</button></div>
+        <p class="tiny">XP de test : activité légère 15 · normale 25 · exigeante 35. Le niveau d'effort reste subjectif : ne force pas pour gagner plus.</p>
+        <div id="activityHistory"></div>
+      </section>
+    </main>
+
+    <aside>
+      <section class="card">
+        <h2>🛠️ Profil & planning</h2>
+        <p class="sub">Configure le prototype pour ton test. Tes choix restent enregistrés sur cet appareil.</p>
+        <label for="name">Pseudo (facultatif)</label><input id="name" maxlength="24" placeholder="Ex. ShadowRunner">
+        <label for="sport">Sport principal</label>
+        <select id="sport">
+          <option>Football</option><option>Basketball</option><option>Course à pied</option><option>Musculation</option><option>Natation</option><option>Tennis</option><option>Autre</option>
+        </select>
+        <label for="experience">Ton expérience</label>
+        <select id="experience"><option value="beginner">Débutant / reprise</option><option value="regular">Régulier</option><option value="advanced">Confirmé</option></select>
+        <label>Jours où tu as déjà une séance ou un match</label>
+        <div class="checks" id="dayChecks">
+          <label><input type="checkbox" value="1">Lun</label><label><input type="checkbox" value="2">Mar</label><label><input type="checkbox" value="3">Mer</label><label><input type="checkbox" value="4">Jeu</label><label><input type="checkbox" value="5">Ven</label><label><input type="checkbox" value="6">Sam</label><label><input type="checkbox" value="0">Dim</label>
+        </div>
+        <label for="goal">Objectif principal (facultatif)</label>
+        <select id="goal"><option value="general">Être plus régulier</option><option value="strength">Gagner en force</option><option value="endurance">Améliorer mon endurance</option><option value="speed">Améliorer ma vitesse</option><option value="skill">Améliorer ma technique</option><option value="return">Reprendre progressivement</option></select>
+        <div class="actions"><button class="btn" id="saveProfile">Enregistrer le profil</button></div>
+        <div class="notice warn">⚠️ Prototype de test, pas un programme médical ou un coach certifié. Si douleur, malaise ou fatigue inhabituelle : arrête et parle-en à un adulte de confiance ou à un professionnel.</div>
+      </section>
+
+      <section class="card">
+        <h2>🗓️ Ta semaine</h2>
+        <p class="sub">Un aperçu simple pour éviter d'empiler les séances.</p>
+        <div class="days" id="weekDays"></div>
+        <p class="tiny" id="weekSummary" style="margin-top:10px">Aucune activité enregistrée cette semaine.</p>
+      </section>
+
+      <section class="card">
+        <h2>🧪 Retour de test</h2>
+        <p class="sub">Après quelques jours, réponds à ces questions puis copie ton retour pour nous aider à équilibrer MASTERY.</p>
+        <label for="motivation">Les quêtes m'ont-elles motivé ?</label>
+        <select id="motivation"><option value="">Choisir…</option><option>Pas du tout</option><option>Un peu</option><option>Plutôt oui</option><option>Beaucoup</option></select>
+        <label for="difficulty">Les quêtes étaient-elles adaptées ?</label>
+        <select id="difficulty"><option value="">Choisir…</option><option>Trop faciles</option><option>Bien adaptées</option><option>Trop difficiles</option><option>Trop nombreuses</option></select>
+        <label for="feedback">Qu'est-ce qui t'a plu ou gêné ?</label>
+        <textarea id="feedback" rows="3" placeholder="Ex. J'aime voir l'XP monter, mais…"></textarea>
+        <div class="actions"><button class="btn" id="exportFeedback">Préparer mon retour</button><button class="btn secondary" id="copyData">Copier les données</button></div>
+        <textarea id="exportBox" class="hidden" rows="8" readonly></textarea>
+      </section>
+    </aside>
+  </div>
+  <div class="footer">MASTERY v0.1 · Prototype local · Les données restent dans ce navigateur sauf si tu les copies et les partages toi-même.</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='mastery_proto_v01';
+const ranks=[
+ {min:0,name:'E',title:'NOVICE'},{min:10,name:'D',title:'DÉBUTANT ACTIF'},{min:25,name:'C',title:'APPRENTI'},
+ {min:45,name:'B',title:'COMBATTANT'},{min:70,name:'A',title:'ÉLITE'},{min:100,name:'S',title:'MAÎTRE'},
+ {min:150,name:'SS',title:'PRODIGE'},{min:225,name:'SSS',title:'MONSTRE'},{min:350,name:'NATION',title:'LÉGENDE'},{min:500,name:'MASTERY',title:'SOMMET'}
+];
+const dayNames=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+const questTemplates=[
+ {id:'q1',title:'Défi mobilité',desc:'5 à 8 minutes de mobilité douce, sans douleur.',xp:10,type:'easy',when:'flex'},
+ {id:'q2',title:'Mini-séance technique',desc:'10 minutes de gestes techniques de ton sport, à intensité tranquille.',xp:15,type:'easy',when:'flex'},
+ {id:'q3',title:'Séance complémentaire',desc:'Choisis une activité courte adaptée à ton objectif, sans chercher l’épuisement.',xp:20,type:'medium',when:'light'},
+ {id:'q4',title:'Bouger avec intention',desc:'Une activité sportive que tu avais prévue, adaptée à ton niveau.',xp:20,type:'medium',when:'flex'},
+ {id:'q5',title:'Bilan de progression',desc:'Note un progrès, une difficulté et ce que tu veux ajuster la semaine prochaine.',xp:10,type:'easy',when:'flex'}
+];
+let state=load();
+function defaultState(){return {profile:{name:'',sport:'Football',experience:'beginner',days:[3,5,0],goal:'general'},xp:0,level:1,done:[],activities:[],weekStart:getWeekStart(),quests:[],lastActive:null,activeDates:[]};}
+function load(){try{let s=JSON.parse(localStorage.getItem(KEY));return s?{...defaultState(),...s,profile:{...defaultState().profile,...(s.profile||{})}}:defaultState()}catch(e){return defaultState()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function getWeekStart(){let d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.toISOString().slice(0,10)}
+function dateKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function xpToNext(level){return 100}
+function rankFor(level){let r=ranks[0];for(const x of ranks)if(level>=x.min)r=x;return r}
+function toast(msg){let el=document.getElementById('toast');el.textContent=msg;el.style.display='block';setTimeout(()=>el.style.display='none',2300)}
+function generateQuests(){
+ let chosen=[...questTemplates];
+ // Keep a recovery-aware, small list. Scheduled training days get no extra workout quest.
+ const today=new Date().getDay(), scheduled=state.profile.days.includes(today);
+ if(scheduled) chosen=chosen.filter(q=>q.id==='q1'||q.id==='q5');
+ if(state.profile.goal==='strength') chosen.find(q=>q.id==='q3').desc='Si tu es reposé : courte séance de renforcement adaptée à ton niveau, sans aller à l’échec.';
+ if(state.profile.goal==='endurance') chosen.find(q=>q.id==='q3').desc='Si tu es reposé : cardio facile à allure confortable, sans test maximal.';
+ if(state.profile.goal==='speed') chosen.find(q=>q.id==='q3').desc='Travail technique et coordination à intensité maîtrisée ; pas de sprint maximal si tu es fatigué.';
+ if(state.profile.goal==='skill') chosen.find(q=>q.id==='q3').desc='Courte séance technique pour ton sport, en privilégiant la qualité plutôt que l’intensité.';
+ if(state.profile.goal==='return') chosen=chosen.filter(q=>q.id==='q1'||q.id==='q5'||q.id==='q2');
+ state.quests=chosen.map(q=>({...q,done:state.done.includes(q.id)}));save();renderQuests();
+}
+function renderStatus(){
+ const r=rankFor(state.level);document.getElementById('rankName').textContent='RANG '+r.name+' · '+r.title;
+ document.getElementById('levelText').textContent='Niveau '+state.level+' · '+state.xp+' XP gagnés';
+ const prog=state.xp%100;document.getElementById('xpBar').style.width=prog+'%';document.getElementById('xpProgress').textContent=prog+' / 100 XP vers le prochain niveau';
+ document.getElementById('totalXp').textContent='Total : '+state.xp+' XP';
+ document.getElementById('doneCount').textContent=state.done.length;
+ document.getElementById('activityCount').textContent=state.activities.length;
+ document.getElementById('streak').textContent=calcStreak()+' j';
+}
+function calcStreak(){let n=0,d=new Date();for(let i=0;i<365;i++){let k=dateKey(d);if(state.activeDates.includes(k)){n++;d.setDate(d.getDate()-1)}else if(i===0){d.setDate(d.getDate()-1)}else break}return n}
+function renderQuests(){
+ const el=document.getElementById('quests');if(!state.quests.length){el.innerHTML='<div class="empty">Pas de quête affichée pour le moment. Clique sur « Adapter » pour régénérer les propositions.</div>';return}
+ el.innerHTML=state.quests.map(q=>`<div class="quest ${q.done?'done':''}"><div class="qbody"><span class="pill ${q.type}">${q.type==='easy'?'Facile':q.type==='medium'?'Normale':'Difficile'}</span><h3>${esc(q.title)}</h3><p>${esc(q.desc)}</p></div><div style="text-align:right"><div class="xp">+${q.xp} XP</div><button class="btn small ${q.done?'secondary':''}" data-quest="${q.id}" ${q.done?'disabled':''}>${q.done?'Validée':'Valider'}</button></div></div>`).join('');
+ el.querySelectorAll('[data-quest]').forEach(b=>b.addEventListener('click',()=>completeQuest(b.dataset.quest)));
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addXP(amount){state.xp+=amount;let totalLevel=1+Math.floor(state.xp/100);state.level=totalLevel;save();renderStatus()}
+function completeQuest(id){let q=state.quests.find(x=>x.id===id);if(!q||q.done)return;q.done=true;state.done.push(id);state.activeDates=[...new Set([...state.activeDates,dateKey()])];addXP(q.xp);save();renderQuests();renderWeek();toast('+'+q.xp+' XP ! Quête validée ⚡')}
+function renderWeek(){
+ const el=document.getElementById('weekDays');const now=new Date();const monday=new Date(now);monday.setDate(now.getDate()-((now.getDay()+6)%7));monday.setHours(0,0,0,0);
+ const dayMap={};state.activities.forEach(a=>dayMap[a.date]=(dayMap[a.date]||0)+1);state.done.forEach(()=>{});
+ el.innerHTML=Array.from({length:7},(_,i)=>{let d=new Date(monday);d.setDate(monday.getDate()+i);let k=dateKey(d),scheduled=state.profile.days.includes(d.getDay()),done=dayMap[k]>0;return `<div class="day ${scheduled?'active':''} ${done?'done':''}"><b>${dayNames[d.getDay()]}</b>${done?'✓':scheduled?'●':'—'}</div>`}).join('');
+ let count=state.activities.filter(a=>a.date>=getWeekStart()).length;let planned=state.profile.days.length;
+ document.getElementById('weekSummary').textContent=`${count} activité(s) enregistrée(s) cette semaine · ${planned} jour(s) de sport prévu(s) dans ton planning.`;
+}
+function renderHistory(){const el=document.getElementById('activityHistory');const arr=state.activities.slice(-5).reverse();el.innerHTML=arr.length?'<h3 style="margin-top:16px">Dernières activités</h3>'+arr.map(a=>`<div class="quest"><div class="qbody"><b>${esc(a.label)}</b><p>${a.date} · ${esc(a.effortLabel)}</p></div><div class="xp">+${a.xp} XP</div></div>`).join(''):'<div class="empty" style="margin-top:12px">Tes activités enregistrées apparaîtront ici.</div>'}
+function hydrateProfile(){document.getElementById('name').value=state.profile.name;document.getElementById('sport').value=state.profile.sport;document.getElementById('experience').value=state.profile.experience;document.getElementById('goal').value=state.profile.goal;document.querySelectorAll('#dayChecks input').forEach(c=>c.checked=state.profile.days.includes(Number(c.value)))}
+function saveProfile(){state.profile.name=document.getElementById('name').value.trim();state.profile.sport=document.getElementById('sport').value;state.profile.experience=document.getElementById('experience').value;state.profile.goal=document.getElementById('goal').value;state.profile.days=[...document.querySelectorAll('#dayChecks input:checked')].map(c=>Number(c.value));save();generateQuests();renderWeek();toast('Profil enregistré ⚡')}
+function logActivity(){
+ const type=document.getElementById('activityType').value,effort=document.getElementById('activityEffort').value;
+ const labels={team:'Entraînement collectif / club',match:'Match ou compétition',strength:'Renforcement / musculation',run:'Course / cardio',other:'Autre sport'};
+ const effortLabels={light:'Légère',normal:'Normale',hard:'Exigeante'};
+ const points={light:15,normal:25,hard:35};
+ const a={label:labels[type],effortLabel:effortLabels[effort],xp:points[effort],date:dateKey()};
+ state.activities.push(a);state.activeDates=[...new Set([...state.activeDates,a.date])];addXP(a.xp);save();renderHistory();renderWeek();toast('Activité enregistrée : +'+a.xp+' XP ⚡');
+}
+function exportData(){const report={prototype:'MASTERY v0.1',pseudo:state.profile.name||'(non renseigné)',sport:state.profile.sport,experience:state.profile.experience,objectif:state.profile.goal,joursSport:state.profile.days.map(n=>dayNames[n]),niveau:state.level,rank:rankFor(state.level).name,xpTotal:state.xp,quetesValidees:state.done.length,activites:state.activities,avis:{motivation:document.getElementById('motivation').value,difficulte:document.getElementById('difficulty').value,commentaire:document.getElementById('feedback').value}};return report}
+document.getElementById('saveProfile').addEventListener('click',saveProfile);
+document.getElementById('refreshBtn').addEventListener('click',()=>{generateQuests();toast('Quêtes adaptées à ton profil')});
+document.getElementById('logActivity').addEventListener('click',logActivity);
+document.getElementById('resetWeekBtn').addEventListener('click',()=>{if(confirm('Lancer une nouvelle semaine de test ? Cela remet à zéro les quêtes validées, mais garde tes XP et tes activités.')){state.done=[];state.weekStart=getWeekStart();generateQuests();save();renderStatus();toast('Nouvelle semaine prête !')}});
+document.getElementById('exportFeedback').addEventListener('click',()=>{let r=exportData();let txt=`RETOUR DE TEST MASTERY v0.1\nPseudo : ${r.pseudo}\nSport : ${r.sport}\nExpérience : ${r.experience}\nObjectif : ${r.objectif}\nJours de sport prévus : ${r.joursSport.join(', ')||'non renseignés'}\nNiveau / rang : ${r.niveau} / ${r.rank}\nXP : ${r.xpTotal}\nQuêtes validées : ${r.quetesValidees}\nActivités enregistrées : ${r.activites.length}\nMotivation : ${r.avis.motivation||'non renseigné'}\nDifficulté : ${r.avis.difficulte||'non renseigné'}\nCommentaire : ${r.avis.commentaire||'aucun'}`;let box=document.getElementById('exportBox');box.value=txt;box.classList.remove('hidden');box.focus();box.select();toast('Retour préparé : copie le texte pour le partager')});
+document.getElementById('copyData').addEventListener('click',()=>{let box=document.getElementById('exportBox');box.value=JSON.stringify(exportData(),null,2);box.classList.remove('hidden');box.focus();box.select();try{document.execCommand('copy');toast('Données sélectionnées — copie si nécessaire')}catch(e){toast('Données affichées : sélectionne et copie')}});
+hydrateProfile();if(!state.quests.length)generateQuests();renderStatus();renderQuests();renderWeek();renderHistory();
+</script>
+</body>
+</html>
